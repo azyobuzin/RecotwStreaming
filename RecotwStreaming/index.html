@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>RecoTw Streaming</title>
+</head>
+<body>
+    <h1>RecoTwStreaming</h1>
+    <p>
+        なにこれ？<br />
+        RecoTw を SignalR で配信する奴。 1 分毎に取得しに行ったり Twitter 眺めたりして収集してるらしい。
+    </p>
+    <p>Hub: MainHub, 通知メソッド: NewTweet(RecotwTweet), 登録する: Record(long)</p>
+
+    <h1>デモ</h1>
+    <p><del>でもでもでもでも、そんなのかんけーねー</del></p>
+    <form id="recordform">
+        <input id="tweetid" type="number" placeholder="ツイート ID" />
+        <input type="submit" value="黒歴史登録" />
+    </form>
+    <ul id="tweets"></ul>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.1.0.min.js"></script>
+    <script src="signalr/hubs"></script>
+    <script>
+        var proxy = $.connection.mainHub;
+        proxy.client.newTweet = function (tweet) {
+            $("<li />").text("@" + tweet.target_sn + ": " + tweet.content)
+                .appendTo($("#tweets"));
+        };
+        $.connection.hub.start().done(function () {
+            $(function () {
+                $("#recordform").on("submit", function () {
+                    proxy.server.record($("#tweetid").val());
+                    $("#tweetid").val("");
+                });
+            });
+        });
+    </script>
+</body>
+</html>
