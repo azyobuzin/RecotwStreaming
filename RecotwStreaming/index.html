@@ -35,6 +35,7 @@
                 $("#recordform").on("submit", function () {
                     proxy.server.record($("#tweetid").val());
                     $("#tweetid").val("");
+                    return false;
                 });
             });
         });
